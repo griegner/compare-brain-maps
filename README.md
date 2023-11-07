@@ -3,7 +3,7 @@
 
 ### requirements
 [nilearn](https://github.com/nilearn/nilearn)  
-[matplotlib](https://matplotlib.org)
+[matplotlib](https://matplotlib.org)  
 [notebook](https://github.com/jupyter/notebook) (for `./examples`)  
 [pytest](https://github.com/pytest-dev/pytest/) (for `./tests`)  
 
