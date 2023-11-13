@@ -1,4 +1,6 @@
 tmp*
 .vscode
+.mypy_cache
 src.egg-info
 __pycache__
+.DS_Store
