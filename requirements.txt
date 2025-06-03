@@ -1,4 +1,7 @@
-nilearn >= 0.10.2
-notebook >= 7.0.6
-matplotlib >= 3.8.1
-pytest >= 7.4.3
+nilearn
+notebook
+neuromaps
+matplotlib
+pytest
+lapy
+scikit-sparse
