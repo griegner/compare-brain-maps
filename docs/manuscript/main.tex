@@ -1,0 +1,61 @@
+\documentclass[9pt]{article}
+
+\usepackage{subfiles} % include subfiles
+\usepackage{fullpage} % 1-in margins
+\usepackage{amsmath, amsfonts, amssymb} % equations
+\usepackage{graphicx} % figures
+\usepackage{subcaption} % subcaptions
+\usepackage{float} % figures
+\usepackage{xcolor} % links
+\usepackage[colorlinks=true, linkcolor=gray, citecolor=gray, urlcolor=gray]{hyperref} % links
+\usepackage{natbib} % citations + references
+\renewcommand{\familydefault}{\sfdefault} % font: CMU sans serif
+
+\begin{document}
+
+\section{Methods}
+\subsection{Assumptions}
+
+Let $\{X(s): s\in D\}$ and $\{Y(s): s\in D\}$ be two spatial stochastic processes (random fields) representing two brain maps that are \textit{weakly stationary}, \textit{isotropic}, and \textit{strong mixing}. The processes are defined over a spatial domain $D$, which is either (1) a 3D brain volume or (2) a 2D manifold of the brain surface embedded in 3D space. In practice, data are observed at a finite set of discrete locations $S = \{s_1, s_2, \dots, s_n\}$ corresponding to (1) volumetric voxels or (2) surface vertices. For simplicity, assume $X(s)$ and $Y(s)$ are standardized to have zero mean and unit variance.\\
+
+\textit{Weak stationary} implies a constant mean and variance (independent of spatial locations $s_1, s_2, \dots, s_n \in D$), and an auto-correlation function that only depends on spatial distance $h = s_i - s_j$:
+\begin{align}
+    \rho_X(h) = \text{corr}[X(s), X(s+h)] = \mathbb{E}[X(s) X(s+h)],
+\end{align}
+
+\noindent while \textit{isotropy} constrains the auto-correlation function to be the same in every direction:
+\begin{align}
+    \rho_X(h) = \rho_X(||h||).
+\end{align}
+
+\noindent \textit{Strong mixing} ($\alpha$-mixing) quantifies the decay of statistical dependence with spatial distance and ensures that observations from two spatial locations become asymptotically independent as the separation between them increases.\\
+
+
+\subsection{Hypothesis Testing with Subsampling}
+
+For analysis, we are interested in the cross-correlation at the same spatial locations (colocated correlation):
+\begin{align}
+    \rho_{XY} = \text{corr}[X(s), Y(s)] = \mathbb{E}[X(s) Y(s)],
+\end{align}
+
+\noindent and the corresponding hypothesis test:
+\begin{align}
+    H_0: \rho_{XY} = 0 \quad\text{against}\quad H_1:\rho_{XY} \ne 0.
+\end{align}
+
+The subsampling methods is a non-parametric approach to test the null hypothesis, $H_0: \rho_{XY} = 0$, by empirically constructing the sampling distribution of the test statistic under the null. This procedure is valid under the stated assumptions of \textit{weak stationarity}, \textit{isotropy}, and \textit{strong mixing}, without requiring a parametric form of the sampling distribution.\\
+
+The subsampling procedure is as follows:
+
+\begin{enumerate}
+    \item Estimate the cross-correlation from the full sample of $n$ locations:
+    \begin{align}
+        \hat\rho_{XY} = \frac{1}{n} \sum_{i=1}^n X(s_i) Y(s_i)
+    \end{align}
+
+    \item Subsample $B$ overlapping spatial patches and re-estimate the cross-correlation. Each patch contains $m$ neighboring voxels/vertices, where $m$ is chosen such that $m\to\infty$ and $m/n \to 0$ as $n\to\infty$. For each subsample $j=1, 2, \dots, B$, the sample cross-correlation $\hat\rho^*_{XY}$ is re-estimated using the $m$ locations within the patch. 
+
+    \item Calculate the percentile interval from the quantiles of the empirical approximation of the sampling distribution, $\{\hat\rho^*_{XY, 1}, \hat\rho^*_{XY, 2}, \dots, \hat\rho^*_{XY, B}\}$.
+    
+\end{enumerate}
+\end{document}
