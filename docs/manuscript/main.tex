@@ -10,6 +10,7 @@
 \usepackage[colorlinks=true, linkcolor=gray, citecolor=gray, urlcolor=gray]{hyperref} % links
 \usepackage{natbib} % citations + references
 \renewcommand{\familydefault}{\sfdefault} % font: CMU sans serif
+\usepackage{parskip} % no indents
 
 \begin{document}
 
@@ -56,6 +57,116 @@ The subsampling procedure is as follows:
     \item Subsample $B$ overlapping spatial patches and re-estimate the cross-correlation. Each patch contains $m$ neighboring voxels/vertices, where $m$ is chosen such that $m\to\infty$ and $m/n \to 0$ as $n\to\infty$. For each subsample $j=1, 2, \dots, B$, the sample cross-correlation $\hat\rho^*_{XY}$ is re-estimated using the $m$ locations within the patch. 
 
     \item Calculate the percentile interval from the quantiles of the empirical approximation of the sampling distribution, $\{\hat\rho^*_{XY, 1}, \hat\rho^*_{XY, 2}, \dots, \hat\rho^*_{XY, B}\}$.
-    
 \end{enumerate}
+
+...\\
+
+\subsection*{Data and Parameters}
+
+Data generating process/Population distribution
+\begin{align}
+    P
+\end{align}
+
+Stochastic process
+\begin{align}
+    \{X_t: t\in\mathbb{Z}\} = \{\dots, X_{-1}, X_0, X_1, \dots\}
+\end{align}
+
+Observed sample from $P\in\mathcal{P}$
+\begin{align}
+    X_n = \{X_1, \dots, X_n\}
+\end{align}
+
+Empirical distribution of the sample
+\begin{align}
+    \hat{P}_n
+\end{align}
+
+Parameter of interest
+\begin{align}
+    \theta = \theta(P)
+\end{align}
+
+Estimator of $\theta(P)$
+\begin{align}
+    \hat{\theta}_n = \hat{\theta}_n(X_1, \dots, X_n)
+\end{align}
+
+\subsection*{Sampling Distributions}
+
+Normalizing constant/Rate of convergence (e.g. $\sqrt{n}$)
+\begin{align}
+    \tau_n
+\end{align}
+
+Root, a function whose sampling distribution is of interest. It can also be studentized.
+\begin{align}
+    R_n = \tau_n(\hat\theta_n - \theta)
+\end{align}
+
+Finite sampling distribution of the root $R_n$ under $P$
+\begin{align}
+    J_n(P)
+\end{align}
+
+Asymptotic sampling distribution, $J_n(P)$ as $n\to\infty$
+\begin{align}
+    J(P)
+\end{align}
+
+
+\subsection*{Bootstraping}
+Bootstrapping approximates the sampling distribution $J_n(P)$ by simulating from an estimated population, $\hat{P}_n$, based on the plug-in principle.\\
+
+Bootstrap sample from $\hat{P}_n$, \textit{iid} with replacement
+\begin{align}
+    X^*_n = \{X^*_1,\dots,X^*_n\}
+\end{align}
+
+Bootstrap estimator
+\begin{align}
+    \hat\theta^*_n = \hat\theta_n(X^*_1,\dots,X^*_n)
+\end{align}
+
+Bootstrap root, centered around $\hat\theta_n$ which is the \textit{theoretical} parameter value in the bootstrap world ($\theta(\hat{P}_n) \approx \hat{\theta}_n$).
+\begin{align}
+    R^*_n = \tau_n(\hat\theta^*_n - \hat\theta_n)
+\end{align}
+
+Bootstrap distribution estimator. The theoretical distribution of $R_n^*$ under resampling from $\hat{P}_n$, which approximates the true sampling distribution $J_n(P)$. 
+\begin{align}
+    J_n(\hat{P}_n)
+\end{align}
+
+The notation $J_n(\hat P_n)$ represents this theoretical distribution, which is then estimated using Monte Carlo simulation (bootstrap replicates).
+
+\subsection*{Subsampling}
+
+Subsampling approximates the sampling distribution $J_n(P)$ by recomputing the statistic on smaller subsamples $X_b$ of the observed sample $X_n$. This method assumes that the sampling distribution at size $b$, $J_b(P)$, is a good approximation of the sampling distribution at size $n$, $J_n(P)$.\\
+
+Subsample from $P$ without replacement. The $i^{th}$ subsample of size $b$, for $i=1, \dots, N_b$, where $N_b = n-b+1$ is the number of subsamples.
+\begin{align}
+    X_{b,i} = \{X_i, \dots, X_{i+b-1}\}
+\end{align}
+
+Subsample estimator
+\begin{align}
+    \hat\theta_{b,i} = \hat\theta_b(X_{b,i})
+\end{align}
+
+Subsample distribution estimators, which are the empirical distribution functions of the recomputed statistics.\\
+
+For confidence intervals, $L_{n,b}(x)$ is the empirical distribution of the centered subsample statistics
+\begin{align}
+L_{n,b}(x) = \frac{1}{N_b} \sum_{i=1}^{N_b} \mathbf{1}{\tau_b(\hat{\theta}_{b,i} - \hat{\theta}_n) \le x}
+\end{align}
+
+For hypothesis testing, $G_{n,b}(x)$ is the empirical distribution of the subsample statistics centered at the null value $\theta_0$
+\begin{align}
+G_{n,b}(x) = \frac{1}{N_b} \sum_{i=1}^{N_b} \mathbf{1}{\tau_b(\hat{\theta}_{b,i} - \theta_0) \le x}
+\end{align}
+
+This notation emphasizes that they are direct empirical estimators of $J_b(P)$, not theoretical distributions derived from a plug-in model.
+
 \end{document}
