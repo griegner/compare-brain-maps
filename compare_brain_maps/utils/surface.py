@@ -1,11 +1,11 @@
 """utilities for surface maps"""
 
 from neuromaps.datasets import fetch_atlas
-from nilearn.surface import PolyMesh
+from nilearn.surface import SurfaceImage
 
 
-def load_polymesh(atlas: str, density: str, mesh: str) -> PolyMesh:
-    """Load a surface mesh from a specified atlas and density.
+def load_surface_atlas(atlas: str, density: str, mesh: str) -> SurfaceImage:
+    """Load a surface atlas at a given density.
 
     Parameters
     ----------
@@ -23,8 +23,11 @@ def load_polymesh(atlas: str, density: str, mesh: str) -> PolyMesh:
 
     Returns
     -------
-    nilearn.surface.PolyMesh
-        a collection of "left" and "right" InMemoryMesh objects
+    nilearn.surface.SurfaceImage
+        contains the mesh (coordinates and faces) and data (mask excluding medial wall) of both hemispheres
     """
-    giftis = fetch_atlas(atlas, density)[mesh]
-    return PolyMesh(left=giftis.L, right=giftis.R)
+    giftis = fetch_atlas(atlas, density)
+    return SurfaceImage(
+        mesh={"left": giftis[mesh].L, "right": giftis[mesh].R},
+        data={"left": giftis["medial"].L, "right": giftis["medial"].R},
+    )
