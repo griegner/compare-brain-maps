@@ -4,7 +4,7 @@ from neuromaps.datasets import fetch_atlas
 from nilearn.surface import PolyMesh
 
 
-def load_polymesh(atlas, density, mesh):
+def load_polymesh(atlas: str, density: str, mesh: str) -> PolyMesh:
     """Load a surface mesh from a specified atlas and density.
 
     Parameters
