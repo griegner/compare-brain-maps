@@ -16,13 +16,13 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 
 [tool.pixi.dependencies]
 # conda dependencies
+scikit-sparse = "*" # requires suite-sparse
 
 [tool.pixi.pypi-dependencies]
 # pypi dependencies
 compare_brain_maps = { path=".", editable=true }
 lapy = "*"
 neuromaps = "*"
-scikit-sparse = "*"
 
 [tool.pixi.feature.lint.dependencies]
 # matches version in .pre-commit-config.yaml
