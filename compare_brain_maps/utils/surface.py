@@ -19,7 +19,7 @@ def load_polymesh(atlas, density, mesh):
         civet in `{"white", "midthickness", "inflated", "veryinflated", "sphere"}`\\
         fsaverage in `{"white", "pial", "inflated", "sphere"}`\\
         fsLR in `{"midthickness", "inflated", "veryinflated", "sphere"}`
-        
+
 
     Returns
     -------
