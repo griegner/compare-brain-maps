@@ -28,7 +28,7 @@ def test_load_surface_atlas(atlas, density):
 
 
 @pytest.mark.parametrize("atlas, density", atlas_density_params)
-def test_surface_adjacency_matrices(atlas, density):
+def test_adjacency_matrices(atlas, density):
     """test all neuromaps atlases have valid adjacency matrices"""
     A = surface.adjacency_matrices(atlas=atlas, density=density, mesh="inflated")
 
