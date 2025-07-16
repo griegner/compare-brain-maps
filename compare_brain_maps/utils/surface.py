@@ -43,6 +43,12 @@ def _adjacency_matrix(faces, mask=None):
     edges = np.vstack([faces[:, [0, 1]], faces[:, [0, 2]], faces[:, [1, 2]]])
     sorted_edges = np.sort(edges, axis=1)
     unique_edges = np.unique(sorted_edges, axis=0)
+
+    if mask is not None:
+        (idx,) = np.where(mask)
+        mask = np.any(np.isin(unique_edges, idx), axis=1)
+        unique_edges = unique_edges[mask]
+
     i, j = unique_edges[:, 0], unique_edges[:, 1]
 
     ones = np.ones(len(unique_edges) * 2, dtype=np.int8)
@@ -77,6 +83,6 @@ def adjacency_matrices(atlas: str, density: str, mesh: str) -> dict:
         - "right": csr_array for the right hemisphere
     """
     surface_atlas = load_surface_atlas(atlas, density, mesh)
-    A_left = _adjacency_matrix(surface_atlas.mesh.parts["left"].faces)
-    A_right = _adjacency_matrix(surface_atlas.mesh.parts["right"].faces)
+    A_left = _adjacency_matrix(surface_atlas.mesh.parts["left"].faces, surface_atlas.data.parts["left"])
+    A_right = _adjacency_matrix(surface_atlas.mesh.parts["right"].faces, surface_atlas.data.parts["right"])
     return {"left": A_left, "right": A_right}
