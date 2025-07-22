@@ -1,6 +1,9 @@
 """utilities for surface maps"""
 
 import copy
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning, module="neuromaps.datasets.utils")
 
 import numpy as np
 from neuromaps.datasets import fetch_atlas
