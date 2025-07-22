@@ -30,18 +30,15 @@ class NearestNeighborSmoother(TransformerMixin, BaseEstimator):
         Returns
         -------
         SurfaceImage
-            Smoothed surface data, centered and scaled to match the input distribution.
+            Smoothed surface data
         """
         X_smoothed = copy.deepcopy(X)
         A = X_smoothed.get_adjacency()
 
         for hemi in ["left", "right"]:
+            # normalize adjacency matrix
+            A[hemi] = A[hemi] / A[hemi].sum(axis=0)
             for _ in range(self.n_iterations):
                 X_smoothed.data.parts[hemi] = X_smoothed.data.parts[hemi] @ A[hemi]
-
-            # center and scale the smoothed data to match the input distribution
-            X_smoothed.data.parts[hemi] = (
-                X_smoothed.data.parts[hemi] - X_smoothed.data.parts[hemi].mean()
-            ) / X_smoothed.data.parts[hemi].std() * X.data.parts[hemi].std() + X.data.parts[hemi].mean()
 
         return X_smoothed
