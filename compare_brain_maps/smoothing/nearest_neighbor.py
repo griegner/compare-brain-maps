@@ -25,12 +25,12 @@ class NearestNeighborSmoother(TransformerMixin, BaseEstimator):
         Parameters
         ----------
         X : Surface
-            Surface mesh input containing 'coordinates'
+            surface object containing the data and mesh for both hemispheres
 
         Returns
         -------
-        SurfaceImage
-            Smoothed surface data
+        Surface
+            surface object with data smoothed on the surface mesh
         """
         X_smoothed = copy.deepcopy(X)
         A = X_smoothed.get_adjacency()
