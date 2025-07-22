@@ -31,7 +31,10 @@ def test_nearest_neighbor_smoother(atlas, density, n_vertices):
     assert isinstance(X_smoothed, Surface), "Surface object not returned"
 
     for hemi in ["left", "right"]:
-        assert not np.array_equal(X.data.parts[hemi], X_smoothed.data.parts[hemi]), f"{hemi} smoothing not applied"
+        data, data_smoothed = X.data.parts[hemi], X_smoothed.data.parts[hemi]
+        assert not np.array_equal(data, data_smoothed), f"{hemi} smoothing not applied"
+        np.testing.assert_array_almost_equal(data.mean(), data_smoothed.mean(), decimal=3)
+        assert data.std() > data_smoothed.std(), f"{hemi} smoothing does not reduce variability"
 
 
 @pytest.mark.parametrize("atlas, density, n_vertices", [("fsaverage", "3k", 2562), ("fsLR", "4k", 4002)])
@@ -47,4 +50,7 @@ def test_heat_kernel_smoother(atlas, density, n_vertices):
     assert isinstance(X_smoothed, Surface), "Surface object not returned"
 
     for hemi in ["left", "right"]:
-        assert not np.array_equal(X.data.parts[hemi], X_smoothed.data.parts[hemi]), f"{hemi} smoothing not applied"
+        data, data_smoothed = X.data.parts[hemi], X_smoothed.data.parts[hemi]
+        assert not np.array_equal(data, data_smoothed), f"{hemi} smoothing not applied"
+        np.testing.assert_almost_equal(data.mean(), data_smoothed.mean(), decimal=2)
+        assert data.std() > data_smoothed.std(), f"{hemi} smoothing does not reduce variability"
