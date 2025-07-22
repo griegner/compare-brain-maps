@@ -1,5 +1,7 @@
 """utilities for surface maps"""
 
+import copy
+
 import numpy as np
 from neuromaps.datasets import fetch_atlas
 from nilearn.surface import PolyData, SurfaceImage, load_surf_data
@@ -8,7 +10,7 @@ from scipy.sparse import csr_array
 
 
 def _adjacency(faces, mask=None):
-    """return adjacency matrix for one hemisphere, excluding the medial wall"""
+    """return adjacency matrix for one hemisphere, optionally excluding the medial wall"""
     n_vertices = faces.max() + 1
 
     edges = np.vstack([faces[:, [0, 1]], faces[:, [0, 2]], faces[:, [1, 2]]])
@@ -47,6 +49,8 @@ class Surface(SurfaceImage):
         civet in `{"white", "midthickness", "inflated","veryinflated",  "sphere"}`\\
         fsaverage in `{"white", "pial", "inflated", "sphere"}`\\
         fsLR in `{"midthickness", "inflated", "sphere"}`
+    mask_medial : bool, optional
+        if True, excludes the medial wall of data and adjacency matrices, by default False
 
     Attributes
     ----------
@@ -73,17 +77,17 @@ class Surface(SurfaceImage):
     (5124,)
     """
 
-    def __init__(self, data, atlas="fsaverage", density="3k", surface="pial"):
+    def __init__(self, data, atlas="fsaverage", density="3k", surface="pial", mask_medial=False):
         giftis = fetch_atlas(atlas, density)
-        super().__init__(data=data, mesh={"left": giftis[surface].L, "right": giftis[surface].R})
+        super().__init__(data=copy.deepcopy(data), mesh={"left": giftis[surface].L, "right": giftis[surface].R})
+        self.mask_medial = mask_medial
 
-        medial = {}
-        for hemi, gifti in zip(["left", "right"], giftis["medial"]):
-            mask = load_surf_data(gifti).astype(bool)
-            medial[hemi] = mask
-            self.data.parts[hemi][~mask] = np.nan
+        medial = {hemi: load_surf_data(gifti).astype(bool) for hemi, gifti in zip(["left", "right"], giftis["medial"])}
+        if mask_medial:
+            for hemi, mask in medial.items():
+                self.data.parts[hemi][~mask] = np.nan
+
         self.medial = PolyData(**medial)
-
         _check_data_and_mesh_compat(self.mesh, self.medial)
 
     def get_adjacency(self):
@@ -97,8 +101,14 @@ class Surface(SurfaceImage):
             - "left": csr_array for the left hemisphere
             - "right": csr_array for the right hemisphere
         """
-        adjacency_left = _adjacency(self.mesh.parts["left"].faces, self.medial.parts["left"])
-        adjacency_right = _adjacency(self.mesh.parts["right"].faces, self.medial.parts["right"])
+        adjacency_left = _adjacency(
+            self.mesh.parts["left"].faces,
+            self.medial.parts["left"] if self.mask_medial else None,
+        )
+        adjacency_right = _adjacency(
+            self.mesh.parts["right"].faces,
+            self.medial.parts["right"] if self.mask_medial else None,
+        )
         return {"left": adjacency_left, "right": adjacency_right}
 
     def get_distance(self):
