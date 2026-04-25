@@ -1,0 +1,16 @@
+# general
+.vscode
+.DS_Store
+*tmp*
+.env
+
+# packaging
+__pycache__/
+*.egg-info
+
+# pixi
+.pixi
+pixi.lock
+
+# datasets
+examples/datasets
